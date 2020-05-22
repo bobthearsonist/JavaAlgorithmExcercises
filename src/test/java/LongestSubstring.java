@@ -3,6 +3,7 @@ import java.util.stream.Collector;
 
 public class LongestSubstring {
     public static int lengthOfLongestSubstring(String s) {
+        if(s.isEmpty()) return 0;
         String longest = s.substring(0,1);
         HashSet<Character> current = new HashSet<>();
         for(Character c: s.toCharArray()){
