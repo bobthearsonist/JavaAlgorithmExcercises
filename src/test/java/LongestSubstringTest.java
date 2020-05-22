@@ -10,5 +10,6 @@ class LongestSubstringTest {
         Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring("abcabcbb"));
         Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring("pwwkew"));
         Assertions.assertEquals(0, LongestSubstring.lengthOfLongestSubstring(""));
+        Assertions.assertEquals(2, LongestSubstring.lengthOfLongestSubstring("ab"));
     }
 }

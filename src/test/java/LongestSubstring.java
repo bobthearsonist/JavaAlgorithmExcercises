@@ -8,20 +8,21 @@ public class LongestSubstring {
         HashSet<Character> current = new HashSet<>();
         for(Character c: s.toCharArray()){
             if(current.contains(c)) {
-                if(longest.length() < current.size()) {
-                    longest = current.stream().collect(Collector.of(
-                            StringBuilder::new,
-                            StringBuilder::append,
-                            StringBuilder::append,
-                            StringBuilder::toString
-                            )
-                    );
-                }
                 current.clear();
                 current.add(c);
             }
             else {
                 current.add(c);
+            }
+
+            if(longest.length() < current.size()) {
+                longest = current.stream().collect(Collector.of(
+                        StringBuilder::new,
+                        StringBuilder::append,
+                        StringBuilder::append,
+                        StringBuilder::toString
+                        )
+                );
             }
         }
         return longest.length();
