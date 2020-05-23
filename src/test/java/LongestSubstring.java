@@ -1,6 +1,5 @@
 import java.util.HashSet;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class LongestSubstring {
     public static int lengthOfLongestSubstring(String s) {
@@ -10,11 +9,10 @@ public class LongestSubstring {
 
         String longest = s.substring(0,1);
         HashSet<Character> current = new HashSet<>();
-        var list = s.chars().mapToObj(c-> (char)c).collect(Collectors.toList());
 
-        for(var outerIterator = list.listIterator(); outerIterator.hasNext(); outerIterator.next()){
-            for(var innerIterator = list.listIterator(outerIterator.nextIndex()) ; innerIterator.hasNext();) {
-                char c = innerIterator.next();
+        for(int outerIterator = 0; outerIterator < s.length(); outerIterator++){
+            for(int innerIterator = outerIterator ; innerIterator < s.length(); innerIterator++) {
+                char c = s.charAt(innerIterator);
                 if (current.contains(c)) {
                     current.clear();
                     break;
@@ -29,6 +27,7 @@ public class LongestSubstring {
                             StringBuilder::toString
                             )
                     );
+                    if(s.length()-outerIterator < longest.length()) break;
                 }
             }
         }
