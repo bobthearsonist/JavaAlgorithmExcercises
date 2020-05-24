@@ -100,23 +100,54 @@ public class LongestSubstring {
         if (s.isEmpty()) return 0;
         if (s.length() == 1) return 1;
 
-        int longest = 1;
-        var visited = new HashSet<Character>();
+        var visited = new HashMap<Character,Integer>();//(character,left-most occurrence)
+        String longest = "";
 
-        for (int leftIterator = 0; leftIterator < s.length();) {
-            for (int rightIterator = leftIterator; rightIterator < s.length(); rightIterator++) {
-                char left = s.charAt(leftIterator);
-                char right = s.charAt(rightIterator);
-                if (visited.contains(right)) {
-                    visited.remove(left);
-                    leftIterator++;
+        for (int rightIterator = 0, leftIterator = 0; rightIterator < s.length(); rightIterator++) {
+            char left = s.charAt(leftIterator);
+            char right = s.charAt(rightIterator);
+
+            String current = s.substring(leftIterator,rightIterator+1);
+
+            if (visited.containsKey(right)) {
+                leftIterator = visited.get(right) + 1;
+                for(int i=0; i <= current.indexOf(right) ; i++) {
+                    visited.remove(current.charAt(i));
                 }
-                visited.add(right);
-                if (longest < visited.size()) {
-                    longest = visited.size();
-                }
+            } else if (longest.length() < current.length()) {
+                longest = current;
             }
+
+            visited.put(right,rightIterator);
         }
+
+        return longest.length();
+    }
+
+    public static int lengthOfLongestSubstring_windowed_optimized(String s){
+        if (s.isEmpty()) return 0;
+        if (s.length() == 1) return 1;
+
+        var visited = new HashMap<Character,Integer>();//(character,left-most occurrence)
+        int longest = 1;
+
+        for (int rightIterator = 0, leftIterator = 0; rightIterator < s.length(); rightIterator++) {
+            char right = s.charAt(rightIterator);
+
+            String current = s.substring(leftIterator,rightIterator+1);
+
+            if (visited.containsKey(right)) {
+                leftIterator = visited.get(right) + 1;
+                for(int i=0; i <= current.indexOf(right) ; i++) {
+                    visited.remove(current.charAt(i));
+                }
+            } else if (longest < current.length()) {
+                longest = current.length();
+            }
+
+            visited.put(right,rightIterator);
+        }
+
         return longest;
     }
 }

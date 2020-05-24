@@ -52,15 +52,23 @@ class LongestSubstringTest {
         Assertions.assertEquals(expected, LongestSubstring.lengthOfLongestSubstring_windowed(s));
     }
 
+    @ParameterizedTest(name = "test {index} the longest non-repeating substring of string {0} has {1} characters")
+    @MethodSource("testCases")
+    void lengthOfLongestSubstring_windowed_optimized(int expected, String s) {
+        Assertions.assertEquals(expected, LongestSubstring.lengthOfLongestSubstring_windowed_optimized(s));
+    }
+
     static Stream<Arguments> testCases() {
         return Stream.of(
+                arguments(6,"wobgrovw"),
+                arguments(3, "abcabcbb"),
+                arguments(5, "tmmzuxt"),
+                arguments(3, "dvdf"),
+                arguments(2, "ab"),
+                arguments(3, "pwwkew"),
                 arguments(4,"jbpnbwwd"),
                 arguments(6, "asjrgapa"),
-                arguments(3, "abcabcbb"),
-                arguments(3, "pwwkew"),
-                arguments(0, ""),
-                arguments(2, "ab"),
-                arguments(3, "dvdf")
+                arguments(0, "")
         );
     }
 }
