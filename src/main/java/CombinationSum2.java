@@ -16,57 +16,57 @@ Note:
 
 public class CombinationSum2 {
     public static List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        var sorted = new TreeMap<Integer, HashSet<Integer>>();
+            var sorted = new TreeMap<Integer, HashSet<Integer>>();
 
-        IntStream.rangeClosed(0,candidates.length-1).forEach(
-                index -> {
-                    //TODO two n*log(n) traversals for get and put
-                    //TODO check equals behavior
-                    val candidate = candidates[index];
-                    if(sorted.containsKey(candidate)) {
-                        var current = sorted.get(candidate);
-                        current.add(index);
-                        sorted.put(candidate, current);
+            IntStream.rangeClosed(0,candidates.length-1).forEach(
+                    index -> {
+                        //TODO two n*log(n) traversals for get and put
+                        //TODO check equals behavior
+                        val candidate = candidates[index];
+                        if(sorted.containsKey(candidate)) {
+                            var current = sorted.get(candidate);
+                            current.add(index);
+                            sorted.put(candidate, current);
+                        } else {
+                            var current = new HashSet<Integer>();
+                            current.add(index);
+                            sorted.put(candidate,current);
+                        }
+                    }
+            );
+
+            var traversal = sorted.entrySet();
+            var solutions = new HashSet<HashMap<Integer,Integer>>();
+            //note: we are traversing again. we can probably collapse the two loops
+            IntStream.rangeClosed(0,candidates.length-1).forEach( index -> {
+                int candidate = candidates[index];
+                var currentSolution = new HashMap<Integer,Integer>() {{ put(candidate,index); }};
+                var currentSum = candidate;
+
+                for(var current: traversal){
+                    var difference = target - currentSum;
+
+                    if(difference < 0) {
+                    // there are no more valid sums for the current index
+                        break;
                     } else {
-                        var current = new HashSet<Integer>();
-                        current.add(index);
-                        sorted.put(candidate,current);
+                    // add current to the solution
+                        var occurences = current.getValue();
+                        int nextIndex = index;
+                        for(int occurence : occurences) { if(occurence>index) nextIndex=occurence; break; }
+                        if(nextIndex!=index) {
+                            currentSolution.put(current.getKey(), nextIndex);
+                            currentSum += current.getKey();
+                        }
                     }
-                }
-        );
 
-        var traversal = sorted.entrySet();
-        var solutions = new HashSet<HashMap<Integer,Integer>>();
-        //note: we are traversing again. we can probably collapse the two loops
-        IntStream.rangeClosed(0,candidates.length-1).forEach( index -> {
-            int candidate = candidates[index];
-            var currentSolution = new HashMap<Integer,Integer>() {{ put(candidate,index); }};
-            var currentSum = candidate;
-
-            for(var current: traversal){
-                var difference = target - currentSum;
-
-                if(difference < 0) {
-                // there are no more valid sums for the current index
-                    break;
-                } else {
-                // add current to the solution
-                    var occurences = current.getValue();
-                    int nextIndex = index;
-                    for(int occurence : occurences) { if(occurence>index) nextIndex=occurence; break; }
-                    if(nextIndex!=index) {
-                        currentSolution.put(current.getKey(), nextIndex);
-                        currentSum += current.getKey();
+                    if(currentSum == target) {
+                    // check the current solution for validity
+                        solutions.add(currentSolution);
+                        break;
                     }
-                }
+                }});
 
-                if(currentSum == target) {
-                // check the current solution for validity
-                    solutions.add(currentSolution);
-                    break;
-                }
-            }});
-
-        return solutions.stream().map(set->set.keySet().stream().collect(Collectors.toList())).collect(Collectors.toList());
+            return solutions.stream().map(set->set.keySet().stream().collect(Collectors.toList())).collect(Collectors.toList());
     }
 }

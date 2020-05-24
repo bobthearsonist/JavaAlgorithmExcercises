@@ -26,6 +26,12 @@ class CombinationSum2Test {
                     //coverage
                     //expected, candidates, target
                     arguments(
+                            //multiple matches with the same first candidate
+                            Arrays.asList(Arrays.asList(1,1,6),Arrays.asList(1,2,5),Arrays.asList(1,7),Arrays.asList(2,6)),
+                            new int[]{10,1,2,7,6,1,5},
+                            8
+                    ),
+                    arguments(
                             //multiple matches
                             //zero case
                             //values too large
