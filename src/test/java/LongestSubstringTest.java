@@ -10,53 +10,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class LongestSubstringTest {
 
-    @Test
-    void lengthOfLongestSubstring() {
-        Assertions.assertEquals(6, LongestSubstring.lengthOfLongestSubstring("asjrgapa"));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring("abcabcbb"));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring("pwwkew"));
-        Assertions.assertEquals(0, LongestSubstring.lengthOfLongestSubstring(""));
-        Assertions.assertEquals(2, LongestSubstring.lengthOfLongestSubstring("ab"));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring("dvdf"));
-    }
-
-    @Test
-    void lengthOfLongestSubstring_arrayImplementation() {
-        Assertions.assertEquals(6, LongestSubstring.lengthOfLongestSubstring_arrayImplementation("asjrgapa"));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring_arrayImplementation("abcabcbb"));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring_arrayImplementation("pwwkew"));
-        Assertions.assertEquals(0, LongestSubstring.lengthOfLongestSubstring_arrayImplementation(""));
-        Assertions.assertEquals(2, LongestSubstring.lengthOfLongestSubstring_arrayImplementation("ab"));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring_arrayImplementation("dvdf"));
-    }
-
-    @Test
-    void lengthOfLongestSubstring_kRepetitionsAllowed() {
-        Assertions.assertEquals(5, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("eceba", 2));
-        Assertions.assertEquals(6, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("abcabcbb", 2));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("eeee", 3));
-
-
-        //orignal implementation tests
-        Assertions.assertEquals(6, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("asjrgapa", 1));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("abcabcbb", 1));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("pwwkew", 1));
-        Assertions.assertEquals(0, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("", 1));
-        Assertions.assertEquals(2, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("ab", 1));
-        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("dvdf", 1));
-    }
-
-    @ParameterizedTest(name = "test {index} the longest non-repeating substring of string {0} has {1} characters")
-    @MethodSource("testCases")
-    void lengthOfLongestSubstring_windowed(int expected, String s) {
-        Assertions.assertEquals(expected, LongestSubstring.lengthOfLongestSubstring_windowed(s));
-    }
-
-    @ParameterizedTest(name = "test {index} the longest non-repeating substring of string {0} has {1} characters")
-    @MethodSource("testCases")
-    void lengthOfLongestSubstring_windowed_optimized(int expected, String s) {
-        Assertions.assertEquals(expected, LongestSubstring.lengthOfLongestSubstring_windowed_optimized(s));
-    }
+    final String CUSTOM_OUTPUT_TEXT = "test {index} the longest non-repeating substring of string {0} has {1} characters";
 
     static Stream<Arguments> testCases() {
         return Stream.of(
@@ -70,5 +24,43 @@ class LongestSubstringTest {
                 arguments(6, "asjrgapa"),
                 arguments(0, "")
         );
+    }
+
+    @ParameterizedTest(name = CUSTOM_OUTPUT_TEXT)
+    @MethodSource("testCases")
+    void lengthOfLongestSubstring(int expected, String s) {
+        Assertions.assertEquals(expected, LongestSubstring.lengthOfLongestSubstring(s));
+    }
+
+    @ParameterizedTest(name = CUSTOM_OUTPUT_TEXT)
+    @MethodSource("testCases")
+    void lengthOfLongestSubstring_arrayImplementation(int expected, String s) {
+        Assertions.assertEquals(expected, LongestSubstring.lengthOfLongestSubstring_arrayImplementation(s));
+    }
+
+    @ParameterizedTest(name = CUSTOM_OUTPUT_TEXT)
+    @MethodSource("testCases")
+    void lengthOfLongestSubstring_kRepetitionsAllowed(int expected, String s) {
+        //orignal implementation tests
+        Assertions.assertEquals(expected, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed(s, 1));
+    }
+
+    @Test
+    void lengthOfLongestSubstring_kRepetitionsAllowed() {
+        Assertions.assertEquals(5, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("eceba", 2));
+        Assertions.assertEquals(6, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("abcabcbb", 2));
+        Assertions.assertEquals(3, LongestSubstring.lengthOfLongestSubstring_kRepetitionsAllowed("eeee", 3));
+    }
+
+    @ParameterizedTest(name = CUSTOM_OUTPUT_TEXT)
+    @MethodSource("testCases")
+    void lengthOfLongestSubstring_windowed(int expected, String s) {
+        Assertions.assertEquals(expected, LongestSubstring.lengthOfLongestSubstring_windowed(s));
+    }
+
+    @ParameterizedTest(name = CUSTOM_OUTPUT_TEXT)
+    @MethodSource("testCases")
+    void lengthOfLongestSubstring_windowed_optimized(int expected, String s) {
+        Assertions.assertEquals(expected, LongestSubstring.lengthOfLongestSubstring_windowed_optimized(s));
     }
 }
