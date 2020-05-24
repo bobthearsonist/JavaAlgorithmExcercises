@@ -101,27 +101,27 @@ public class LongestSubstring {
         if (s.length() == 1) return 1;
 
         var visited = new HashMap<Character,Integer>();//(character,left-most occurrence)
-        String longest = "";
+        int longest = 1;
 
         for (int rightIterator = 0, leftIterator = 0; rightIterator < s.length(); rightIterator++) {
-            char left = s.charAt(leftIterator);
             char right = s.charAt(rightIterator);
 
-            String current = s.substring(leftIterator,rightIterator+1);
+            int current = (rightIterator-leftIterator)+1;
 
             if (visited.containsKey(right)) {
-                leftIterator = visited.get(right) + 1;
-                for(int i=0; i <= current.indexOf(right) ; i++) {
-                    visited.remove(current.charAt(i));
+                int newLeftIterator = visited.get(right) + 1;
+                for(int i=leftIterator; i < newLeftIterator ; i++) {
+                    visited.remove(s.charAt(i));
                 }
-            } else if (longest.length() < current.length()) {
+                leftIterator = newLeftIterator;
+            } else if (longest < current) {
                 longest = current;
             }
 
             visited.put(right,rightIterator);
         }
 
-        return longest.length();
+        return longest;
     }
 
     public static int lengthOfLongestSubstring_windowed_optimized(String s){
@@ -138,7 +138,7 @@ public class LongestSubstring {
 
             if (visited.containsKey(right)) {
                 leftIterator = visited.get(right) + 1;
-                for(int i=0; i <= current.indexOf(right) ; i++) {
+                for(int i=0; i <= visited.get(right) ; i++) {
                     visited.remove(current.charAt(i));
                 }
             } else if (longest < current.length()) {
