@@ -2,17 +2,14 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-\
-
-public class TestPractice {
+public class ABeforeB {
 /*
-first question: check if a string has all a's before b's. Should be able to do in no time
-
-second question: given a list of alphanumeric string, check if the list is ordered according to the rules they will give.
+check if a string has all a's before b's.
  */
 
     public static boolean check(String s){
@@ -70,24 +67,20 @@ second question: given a list of alphanumeric string, check if the list is order
     }
 
     public static boolean check4(String s) {
-        var as = new HashSet<Integer>();
-        var bs = new HashSet<Integer>();
 
-        IntStream.rangeClosed(0,s.length()-1).forEach(
-                index -> {
-                    if(s.charAt(index) == 'a') as.add(index);
-                    else bs.add(index);
-                }
-        );
-
-        for ( var ai = as.iterator(); ai.hasNext() ;){
-            int a = ai.next();
-            for ( var bi = bs.iterator(); bi.hasNext();){
-                int b = bi.next();
-                if(a>b) return false;
-            }
-        }
-        return true;
+        AtomicInteger mostRecentB = new AtomicInteger();
+        AtomicInteger mostRecentA = new AtomicInteger();
+        long validCount = IntStream.rangeClosed(0,s.length()-1)
+                .takeWhile(
+                    index -> {
+                        if(s.charAt(index) == 'b') mostRecentB.set(index);
+                        if(s.charAt(index) == 'a') mostRecentA.set(index);
+                        if( mostRecentA.get() > mostRecentB.get()) return false;
+                        else return true;
+                    }
+                ).count();
+        if(validCount < s.length()) return false;
+        else return true;
     }
 
     public static  boolean sorted1(String[] input) {
