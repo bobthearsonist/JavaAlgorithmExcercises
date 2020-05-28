@@ -68,19 +68,18 @@ check if a string has all a's before b's.
 
     public static boolean check4(String s) {
 
-        AtomicInteger mostRecentB = new AtomicInteger();
-        AtomicInteger mostRecentA = new AtomicInteger();
+        AtomicInteger mostRecentB = new AtomicInteger(s.length());
+        AtomicInteger mostRecentA = new AtomicInteger(-1);
         long validCount = IntStream.rangeClosed(0,s.length()-1)
                 .takeWhile(
                     index -> {
                         if(s.charAt(index) == 'b') mostRecentB.set(index);
-                        if(s.charAt(index) == 'a') mostRecentA.set(index);
-                        if( mostRecentA.get() > mostRecentB.get()) return false;
-                        else return true;
+                        else if(s.charAt(index) == 'a') mostRecentA.set(index);
+                        return (mostRecentB.get() - mostRecentA.get() > 0);
                     }
                 ).count();
-        if(validCount < s.length()) return false;
-        else return true;
+        if(validCount == s.length()) return true;
+        else return false;
     }
 
     public static  boolean sorted1(String[] input) {
