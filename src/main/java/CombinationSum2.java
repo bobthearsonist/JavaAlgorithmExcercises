@@ -1,6 +1,5 @@
-import lombok.val;
-
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -12,61 +11,55 @@ Each number in candidates may only be used once in the combination.
 Note:
     All numbers (including target) will be positive integers.
     The solution set must not contain duplicate combinations.
+    No 0's!
  */
 
+
+//normally I wouldnt have comments, but here they are left to show assumptions/thought process. In production code I would #cleancoce into variable names or function names
 public class CombinationSum2 {
     public static List<List<Integer>> combinationSum2(int[] candidates, int target) {
-            var sorted = new TreeMap<Integer, HashSet<Integer>>();
+        var sorted = IntStream.rangeClosed(0,candidates.length-1)
+                .boxed()
+                // {index, value}
+                .collect(Collectors.toMap(i->i,i->candidates[i]))// O(n)
+                .entrySet()
+                .stream()
+                //don't even bother if larger than target (because all positive)
+                .filter(i -> i.getValue() <= target)
+                // streams use TimSort n*log(n) average
+                .sorted(Comparator.comparing(Entry::getValue))
+                .collect(Collectors.toList());
 
-            IntStream.rangeClosed(0,candidates.length-1).forEach(
-                    index -> {
-                        //TODO two n*log(n) traversals for get and put
-                        //TODO check equals behavior
-                        val candidate = candidates[index];
-                        if(sorted.containsKey(candidate)) {
-                            var current = sorted.get(candidate);
-                            current.add(index);
-                            sorted.put(candidate, current);
-                        } else {
-                            var current = new HashSet<Integer>();
-                            current.add(index);
-                            sorted.put(candidate,current);
-                        }
-                    }
-            );
+        var solutions = new LinkedList<LinkedList<Integer>>();
 
-            var traversal = sorted.entrySet();
-            var solutions = new HashSet<HashMap<Integer,Integer>>();
-            //note: we are traversing again. we can probably collapse the two loops
-            IntStream.rangeClosed(0,candidates.length-1).forEach( index -> {
-                int candidate = candidates[index];
-                var currentSolution = new HashMap<Integer,Integer>() {{ put(candidate,index); }};
-                var currentSum = candidate;
+        for(Entry<Integer, Integer> i: sorted){
+            //keep a current sum to avoid an iterable reduction each loop
+            int currentSum = i.getValue();
+            var currentSolution = new LinkedList<Integer>();
+            currentSolution.add(i.getValue());
 
-                for(var current: traversal){
-                    var difference = target - currentSum;
+            for(Entry<Integer, Integer> j: sorted){
+                if(currentSum == target) {
+                // check the current solution for validity
+                    solutions.add(currentSolution);
+                    break;
+                } else if( currentSum > target) {
+                // if we have blown through the target just stop
+                    break;
+                } else if( j.getKey() != i.getKey()){
+                // add current to the solution, but don't re-use elements
+                    currentSum += j.getValue();
+                    currentSolution.add(j.getValue());
+                }
+            }
+        };
+        return solutions.parallelStream().collect(Collectors.toList());
+//        return solutions.parallelStream()
+//                .map(s->s.stream().collect(Collectors.toList()))
+//                .collect(Collectors.toList());
+    }
 
-                    if(difference < 0) {
-                    // there are no more valid sums for the current index
-                        break;
-                    } else {
-                    // add current to the solution
-                        var occurences = current.getValue();
-                        int nextIndex = index;
-                        for(int occurence : occurences) { if(occurence>index) nextIndex=occurence; break; }
-                        if(nextIndex!=index) {
-                            currentSolution.put(current.getKey(), nextIndex);
-                            currentSum += current.getKey();
-                        }
-                    }
-
-                    if(currentSum == target) {
-                    // check the current solution for validity
-                        solutions.add(currentSolution);
-                        break;
-                    }
-                }});
-
-            return solutions.stream().map(set->set.keySet().stream().collect(Collectors.toList())).collect(Collectors.toList());
+    public static List<List<Integer>> combinationSum2_faster(int[] candidates, int target) {
+        return null;
     }
 }

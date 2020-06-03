@@ -1,11 +1,13 @@
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.collection.IsIn;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.everyItem;
@@ -32,11 +34,9 @@ class CombinationSum2Test {
                             8
                     ),
                     arguments(
-                            //multiple matches
-                            //zero case
                             //values too large
-                            Arrays.asList(Arrays.asList(0,2,3), Arrays.asList(2,3), Arrays.asList(0,5)),
-                            new int[]{2,3,5,0,6,20},
+                            Arrays.asList(Arrays.asList(2,3)),
+                            new int[]{2,3,5,6,20},
                             5
                     ),
                     arguments(
@@ -48,8 +48,8 @@ class CombinationSum2Test {
                     arguments(
                             //multiple matches
                             //duplicate solutions
-                            Arrays.asList(Arrays.asList(2,3), Arrays.asList(0,2,3)),
-                            new int[]{2,3,0,2,3},
+                            Arrays.asList(Arrays.asList(2,3), Arrays.asList(2,3)),
+                            new int[]{2,3,2,3},
                             5
                     ),
                     arguments(
@@ -76,7 +76,16 @@ class CombinationSum2Test {
     @ParameterizedTest()
     @MethodSource("testCases")
     void combinationSum2(List<List<Integer>> expected, int[] candidates, int target) {
-        var actual = CombinationSum2.combinationSum2(candidates,target);
-        MatcherAssert.assertThat(expected,everyItem(IsIn.in(actual)));
+        //lets sort everything here so order is predictable and comparison works regardless of algorithm implementation
+        var actual = CombinationSum2.combinationSum2(candidates,target)
+                .parallelStream()
+                .map(solution->solution.stream()
+                        .sorted(Comparator.naturalOrder())
+                .collect(Collectors.toList()))
+                .collect(Collectors.toList());
+        expected.parallelStream()
+                .map(solution->solution.stream().sorted(Comparator.naturalOrder()))
+                .collect(Collectors.toList());
+        MatcherAssert.assertThat(expected,everyItem(Is.is(actual)));
     }
 }
