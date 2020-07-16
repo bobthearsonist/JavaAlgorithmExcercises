@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class testPracticeTest {
+class ABeforeBTest {
 
     static Stream<Arguments> testCases() {
         return Stream.of(
